@@ -41,15 +41,12 @@
      * @constructor
      */
     var Shape = function (res) {
+        if (!(this instanceof Shape))
+            return Shape.get(res);
         this.resource = GAME.Resource.get(res);
         cached_shapes[this.resource.path] = this;
         console.info("Shape Created(%s)", this.resource.path);
     };
-    Shape.prototype.resource = null;
-    Shape.prototype.ready = false;
-    Shape.prototype.width = -1;
-    Shape.prototype.height = -1;
-
     /**
      * Get a shape
      * @param {Shape|Resource|string} res
@@ -70,8 +67,12 @@
         else
             return new Shape(res);
     };
+
+    Shape.prototype.resource = null;
+    Shape.prototype.ready = false;
+    Shape.prototype.width = -1;
+    Shape.prototype.height = -1;
     /**
-     *
      * @type {Frame[]}
      */
     Shape.prototype.frames = [];

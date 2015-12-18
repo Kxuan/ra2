@@ -3,6 +3,8 @@
 
     var cached_resources = {};
     var Resource = function (path) {
+        if (!(this instanceof Resource))
+            return Resource.get(path);
         this.path = path;
         cached_resources[path] = this;
     };

@@ -3,33 +3,16 @@ var canvas = document.getElementsByTagName('canvas')[0],
 
 var unit_palette = GAME.Palette.get("ra2/cache/unittem.pal");
 
-var model = new GAME.BuildingModel([
-    {
-        states: {build: Range(0, 25)},
-        shape: new GAME.ColoredShape("ra2/isosnow/gaaircmk.shp", unit_palette)
-    },
-
-    {
-        states: {normal: [0], injure: [1], broken: [2]},
-        shape: new GAME.ColoredShape("ra2/snow/gaairc.shp", unit_palette)
-    },
-    {
-        states: {normal: [0], injure: [1], broken: [1]},
-        shape: new GAME.ColoredShape("ra2/snow/gaaircbb.shp", unit_palette)
-    },
-    {
-        states: {normal: Range(0, 4), injure: Range(4, 8), broken: Range(4, 8)},
-        shape: new GAME.ColoredShape("ra2/snow/gaairc_a.shp", unit_palette)
-    },
-    {
-        states: {normal: Range(0, 6), injure: Range(6, 12), broken: Range(6, 12)},
-        shape: new GAME.ColoredShape("ra2/snow/gaairc_b.shp", unit_palette)
-    },
-    {
-        states: {normal: Range(0, 8), injure: Range(8, 16), broken: Range(8, 16)},
-        shape: new GAME.ColoredShape("ra2/snow/gaairc_c.shp", unit_palette)
-    }
-]);
+var model = new Ra2BuildingModel(
+    unit_palette,
+    [{type: 1, shape: "ra2/isosnow/gaaircmk.shp"}],
+    [
+        {type: 3, shape: "ra2/snow/gaairc.shp"},
+        {type: 2, shape: "ra2/snow/gaaircbb.shp"},
+        {type: 2, shape: "ra2/snow/gaairc_a.shp"},
+        {type: 2, shape: "ra2/snow/gaairc_b.shp"},
+        {type: 2, shape: "ra2/snow/gaairc_c.shp"},
+    ]);
 
 canvas.width = document.documentElement.clientWidth;
 canvas.height = document.documentElement.clientHeight;
