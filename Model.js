@@ -5,26 +5,14 @@
      * Model
      * @constructor
      * @param {string} initialState
-     * @param {Layer[]} layers
+     * @param layers
      */
     var Model = function (initialState, layers) {
         if (layers.length == 0)
-            throw new RangeError("At least one shape");
+            throw new RangeError("At least one layer");
         this.layers = layers;
-        this.state = initialState;
-
-        layers.forEach(function (layer) {
-            layer.setState(initialState);
-        })
+        this.currentState = initialState;
     };
-    /**
-     *
-     * @type {Layer[]}
-     */
-    Model.prototype.layers = null;
-    Model.prototype.width = -1;
-    Model.prototype.height = -1;
-    Model.prototype.state = null;
     Object.defineProperty(Model.prototype, 'ready', {
         configurable: true,
         get: function () {
@@ -33,6 +21,13 @@
             });
         }
     });
+
+    Model.prototype.layers = null;
+    Model.prototype.states = null;
+    Model.prototype.frameIndex = 0;
+    Model.prototype.width = -1;
+    Model.prototype.height = -1;
+    Model.prototype.currentState = null;
     /**
      *
      * @returns {*}
@@ -50,34 +45,75 @@
                 }))
             .then(function () {
                 Object.defineProperty(self, 'ready', {value: true});
-                self.width = self.layers[0].width;
-                self.height = self.layers[0].height;
+                self.width = self.layers[0].shape.shape.width;
+                self.height = self.layers[0].shape.shape.height;
 
                 if (self.layers.some(function (layer) {
-                        return layer.width != self.width || layer.height != self.height;
+                        return layer.shape.shape.width != self.width || layer.shape.shape.height != self.height;
                     })) {
                     throw new Error("Some shape has different size");
+                }
+                return self.layers;
+            })
+            .then(function (layers) {
+                var allLayerStates = layers.reduce(
+                    /**
+                     *
+                     * @param {object} states
+                     * @param layer
+                     */
+                    function (states, layer) {
+                        for (var state_name in layer.states) {
+                            if (!(state_name in states)) {
+                                states[state_name] = [];
+                            }
+                            states[state_name].push({
+                                shape: layer.shape,
+                                states: layer.states[state_name],
+                                frameIndex: 0
+                            });
+                        }
+                        return states;
+                    }, {});
+
+                var canvas, ctx;
+                self.states = Object.create(null);
+
+                for (var state_name in allLayerStates) {
+                    var currentStateLayers = allLayerStates[state_name];
+                    var currentStateFrames = [];
+
+                    do {
+                        canvas = document.createElement('canvas');
+                        ctx = canvas.getContext('2d');
+                        currentStateLayers.forEach(function (frame) {
+                            frame.shape.draw(frame.states[frame.frameIndex], ctx);
+                            frame.shape.draw(frame.states[frame.frameIndex] + frame.shape.frames.length / 2, ctx);
+                            frame.frameIndex = (frame.frameIndex + 1) % frame.states.length;
+                        });
+                        currentStateFrames.push(canvas);
+                    } while (currentStateLayers.some(function (f) {
+                        return f.frameIndex != 0;
+                    }));
+
+                    self.states[state_name] = currentStateFrames;
                 }
             });
     };
     Model.prototype.step = function () {
-        this.layers.forEach(function (layer) {
-            layer.step();
-        });
+        var currentStateFrames = this.states[this.currentState];
+        this.frameIndex = (this.frameIndex + 1) % currentStateFrames.length;
     };
     Model.prototype.setState = function (newState) {
-        this.layers.forEach(function (layer) {
-            layer.setState(newState);
-        });
+        this.currentState = newState;
+        this.frameIndex = 0;
     };
     /**
      *
      * @param {CanvasRenderingContext2D} ctx
      */
     Model.prototype.draw = function (ctx) {
-        this.layers.forEach(function (layer) {
-            layer.draw(ctx);
-        });
+        ctx.drawImage(this.states[this.currentState][this.frameIndex], 0, 0);
     };
     GAME.Model = Model;
 })();

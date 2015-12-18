@@ -11,7 +11,7 @@
         this.shape = GAME.Shape.get(shape);
         this.palette = GAME.Palette.get(palette);
         cached_colored_shapes[this.shape.resource.path + "&" + this.palette.resource.path] = this;
-        console.info("Palette Created(%s)", this.shape.resource.path + "&" + this.palette.resource.path);
+        console.info("ColoredShape Created(%s)", this.shape.resource.path + "&" + this.palette.resource.path);
     };
 
     ColoredShape.get = function (shape, palette) {
@@ -55,7 +55,7 @@
             var colorMap = self.palette.map,
                 shapeFrames = self.shape.frames;
 
-            self.frames = shapeFrames.map(function (frame) {
+            self.frames = shapeFrames.map(function (frame, frameIndex) {
                 if (frame.width == 0 || frame.height == 0) {
                     //The are size is zero. Just skip it
                     return null;
@@ -67,17 +67,33 @@
                 canvas.height = frame.height;
                 var imgData = ctx.createImageData(frame.width, frame.height);
                 var p = 0, indexColor;
-                for (var i = 0; i < frame.u8Image.length; i++) {
-                    indexColor = frame.u8Image[i];
-                    if (indexColor == 0) {
-                        //TODO How the ra2 get the alpha value?
-                        imgData.data[p] = 0;
+                if (frameIndex < shapeFrames.length / 2) {
+                    for (var i = 0; i < frame.u8Image.length; i++) {
+                        indexColor = frame.u8Image[i];
+                        if (indexColor == 0) {
+                            //TODO Is that right?
+                            imgData.data[p + 3] = 0;
+                            p += 4;
+                        } else {
+                            imgData.data[p++] = colorMap[frame.u8Image[i]].R;
+                            imgData.data[p++] = colorMap[frame.u8Image[i]].G;
+                            imgData.data[p++] = colorMap[frame.u8Image[i]].B;
+                            imgData.data[p++] = 255;
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < frame.u8Image.length; i++) {
+                        switch (frame.u8Image[i]) {
+                            case 0:
+                                imgData.data[p + 3] = 0;
+                                break;
+                            case 1:
+                                imgData.data[p + 3] = 128;
+                                break;
+                            default:
+                                throw new Error("Unexpected shadow value");
+                        }
                         p += 4;
-                    } else {
-                        imgData.data[p++] = colorMap[frame.u8Image[i]].R;
-                        imgData.data[p++] = colorMap[frame.u8Image[i]].G;
-                        imgData.data[p++] = colorMap[frame.u8Image[i]].B;
-                        imgData.data[p++] = 255;
                     }
                 }
                 ctx.putImageData(imgData, 0, 0);
@@ -87,6 +103,7 @@
                     canvas: canvas
                 }
             });
+            return self;
         });
     };
 

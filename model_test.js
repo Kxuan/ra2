@@ -4,18 +4,11 @@ var canvas = document.getElementsByTagName('canvas')[0],
 var unit_palette = GAME.Palette.get("ra2/cache/unittem.pal");
 
 var model = new GAME.Model('normal', [
-    //shadows
-    new GAME.Layer({normal: [3]}, GAME.ColoredShape.get("ra2/generic/ggairc.shp", unit_palette)),
-    new GAME.Layer({normal: [12]}, GAME.ColoredShape.get("ra2/generic/ggairc_b.shp", unit_palette)),
-    new GAME.Layer({normal: [16]}, GAME.ColoredShape.get("ra2/generic/ggairc_c.shp", unit_palette)),
-    new GAME.Layer({normal: [2]}, GAME.ColoredShape.get("ra2/generic/ggaircbb.shp", unit_palette)),
-
-    //shape
-    new GAME.Layer({normal: [0]}, GAME.ColoredShape.get("ra2/generic/ggairc.shp", unit_palette)),
-    new GAME.Layer({normal: [0]}, GAME.ColoredShape.get("ra2/generic/ggaircbb.shp", unit_palette)),
-    new GAME.Layer({normal: [0, 1, 2, 3]}, GAME.ColoredShape.get("ra2/generic/ggairc_a.shp", unit_palette)),
-    new GAME.Layer({normal: [0, 1, 2, 3, 4, 5]}, GAME.ColoredShape.get("ra2/generic/ggairc_b.shp", unit_palette)),
-    new GAME.Layer({normal: [0, 1, 2, 3, 4, 5, 6, 7]}, GAME.ColoredShape.get("ra2/generic/ggairc_c.shp", unit_palette))
+    {states: {normal: [0]}, shape: GAME.ColoredShape.get("ra2/snow/gaairc.shp", unit_palette)},
+    {states: {normal: [0]}, shape: GAME.ColoredShape.get("ra2/snow/gaaircbb.shp", unit_palette)},
+    {states: {normal: [0, 1, 2, 3]}, shape: GAME.ColoredShape.get("ra2/snow/gaairc_a.shp", unit_palette)},
+    {states: {normal: [0, 1, 2, 3, 4, 5]}, shape: GAME.ColoredShape.get("ra2/snow/gaairc_b.shp", unit_palette)},
+    {states: {normal: [0, 1, 2, 3, 4, 5, 6, 7]}, shape: GAME.ColoredShape.get("ra2/snow/gaairc_c.shp", unit_palette)}
 ]);
 
 canvas.width = document.documentElement.clientWidth;
