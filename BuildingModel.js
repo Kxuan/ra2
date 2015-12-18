@@ -2,16 +2,16 @@
     "use strict";
 
     /**
-     * Model
+     * a Building of Model
      * @constructor
      * @param layers
      */
-    var Model = function (layers) {
+    var BuildingModel = function (layers) {
         if (layers.length == 0)
             throw new RangeError("At least one layer");
         this.layers = layers;
     };
-    Object.defineProperty(Model.prototype, 'ready', {
+    Object.defineProperty(BuildingModel.prototype, 'ready', {
         configurable: true,
         get: function () {
             return this.layers.every(function (layer) {
@@ -20,19 +20,19 @@
         }
     });
 
-    Model.prototype.layers = null;
-    Model.prototype.states = null;
-    Model.prototype.frameIndex = 0;
-    Model.prototype.width = -1;
-    Model.prototype.height = -1;
-    Model.prototype.currentState = null;
-    Model.prototype.onloop = null;
+    BuildingModel.prototype.layers = null;
+    BuildingModel.prototype.states = null;
+    BuildingModel.prototype.frameIndex = 0;
+    BuildingModel.prototype.width = -1;
+    BuildingModel.prototype.height = -1;
+    BuildingModel.prototype.currentState = null;
+    BuildingModel.prototype.onloop = null;
 
     /**
      *
      * @returns {*}
      */
-    Model.prototype.load = function () {
+    BuildingModel.prototype.load = function () {
         if (this.ready)
             return Promise.resolve();
 
@@ -85,6 +85,8 @@
 
                     do {
                         canvas = document.createElement('canvas');
+                        canvas.width = self.width;
+                        canvas.height = self.height;
                         ctx = canvas.getContext('2d');
                         currentStateLayers.forEach(function (frame) {
                             frame.shape.draw(frame.states[frame.frameIndex], ctx);
@@ -100,14 +102,16 @@
                 }
             });
     };
-    Model.prototype.step = function () {
+    BuildingModel.prototype.step = function () {
         var currentStateFrames = this.states[this.currentState];
+        if (!currentStateFrames)
+            return;
         this.frameIndex = (this.frameIndex + 1) % currentStateFrames.length;
         if (this.frameIndex == 0 && typeof this.onloop == 'function') {
             this.onloop(true);
         }
     };
-    Model.prototype.setState = function (newState, onloop) {
+    BuildingModel.prototype.setState = function (newState, onloop) {
         if (typeof this.onloop == 'function')
             this.onloop(false);
         this.onloop = onloop;
@@ -118,8 +122,10 @@
      *
      * @param {CanvasRenderingContext2D} ctx
      */
-    Model.prototype.draw = function (ctx) {
+    BuildingModel.prototype.draw = function (ctx) {
+        if (!this.states[this.currentState])
+            return;
         ctx.drawImage(this.states[this.currentState][this.frameIndex], 0, 0);
     };
-    GAME.Model = Model;
+    GAME.BuildingModel = BuildingModel;
 })();
