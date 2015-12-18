@@ -4,11 +4,11 @@ var canvas = document.getElementsByTagName('canvas')[0],
 var unit_palette = GAME.Palette.get("ra2/cache/unittem.pal");
 
 var model = new GAME.Model('normal', [
-    {states: {normal: [0]}, shape: GAME.ColoredShape.get("ra2/snow/gaairc.shp", unit_palette)},
-    {states: {normal: [0]}, shape: GAME.ColoredShape.get("ra2/snow/gaaircbb.shp", unit_palette)},
-    {states: {normal: [0, 1, 2, 3]}, shape: GAME.ColoredShape.get("ra2/snow/gaairc_a.shp", unit_palette)},
-    {states: {normal: [0, 1, 2, 3, 4, 5]}, shape: GAME.ColoredShape.get("ra2/snow/gaairc_b.shp", unit_palette)},
-    {states: {normal: [0, 1, 2, 3, 4, 5, 6, 7]}, shape: GAME.ColoredShape.get("ra2/snow/gaairc_c.shp", unit_palette)}
+    {states: {normal: [0]}, shape: new GAME.ColoredShape("ra2/snow/gaairc.shp", unit_palette)},
+    {states: {normal: [0]}, shape: new GAME.ColoredShape("ra2/snow/gaaircbb.shp", unit_palette)},
+    {states: {normal: [0, 1, 2, 3]}, shape: new GAME.ColoredShape("ra2/snow/gaairc_a.shp", unit_palette)},
+    {states: {normal: [0, 1, 2, 3, 4, 5]}, shape: new GAME.ColoredShape("ra2/snow/gaairc_b.shp", unit_palette)},
+    {states: {normal: [0, 1, 2, 3, 4, 5, 6, 7]}, shape: new GAME.ColoredShape("ra2/snow/gaairc_c.shp", unit_palette)}
 ]);
 
 canvas.width = document.documentElement.clientWidth;

@@ -88,7 +88,7 @@
                         ctx = canvas.getContext('2d');
                         currentStateLayers.forEach(function (frame) {
                             frame.shape.draw(frame.states[frame.frameIndex], ctx);
-                            frame.shape.draw(frame.states[frame.frameIndex] + frame.shape.frames.length / 2, ctx);
+                            frame.shape.draw(frame.states[frame.frameIndex] + frame.shape.shape.frames.length / 2, ctx);
                             frame.frameIndex = (frame.frameIndex + 1) % frame.states.length;
                         });
                         currentStateFrames.push(canvas);
