@@ -4,14 +4,12 @@
     /**
      * Model
      * @constructor
-     * @param {string} initialState
      * @param layers
      */
-    var Model = function (initialState, layers) {
+    var Model = function (layers) {
         if (layers.length == 0)
             throw new RangeError("At least one layer");
         this.layers = layers;
-        this.currentState = initialState;
     };
     Object.defineProperty(Model.prototype, 'ready', {
         configurable: true,
@@ -28,6 +26,8 @@
     Model.prototype.width = -1;
     Model.prototype.height = -1;
     Model.prototype.currentState = null;
+    Model.prototype.onloop = null;
+
     /**
      *
      * @returns {*}
@@ -103,8 +103,14 @@
     Model.prototype.step = function () {
         var currentStateFrames = this.states[this.currentState];
         this.frameIndex = (this.frameIndex + 1) % currentStateFrames.length;
+        if (this.frameIndex == 0 && typeof this.onloop == 'function') {
+            this.onloop(true);
+        }
     };
-    Model.prototype.setState = function (newState) {
+    Model.prototype.setState = function (newState, onloop) {
+        if (typeof this.onloop == 'function')
+            this.onloop(false);
+        this.onloop = onloop;
         this.currentState = newState;
         this.frameIndex = 0;
     };

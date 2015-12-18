@@ -3,7 +3,9 @@ var canvas = document.getElementsByTagName('canvas')[0],
 
 var unit_palette = GAME.Palette.get("ra2/cache/unittem.pal");
 
-var model = new GAME.Model('normal', [
+var model = new GAME.Model([
+    {states: {build: GAME.Range(0, 25)}, shape: new GAME.ColoredShape("ra2/isosnow/gaaircmk.shp", unit_palette)},
+
     {states: {normal: [0]}, shape: new GAME.ColoredShape("ra2/snow/gaairc.shp", unit_palette)},
     {states: {normal: [0]}, shape: new GAME.ColoredShape("ra2/snow/gaaircbb.shp", unit_palette)},
     {states: {normal: [0, 1, 2, 3]}, shape: new GAME.ColoredShape("ra2/snow/gaairc_a.shp", unit_palette)},
@@ -13,7 +15,13 @@ var model = new GAME.Model('normal', [
 
 canvas.width = document.documentElement.clientWidth;
 canvas.height = document.documentElement.clientHeight;
-model.load().then(startDraw);
+model.load().then(function () {
+    model.setState('build', function (done) {
+        if (done)
+            model.setState('normal');
+    });
+    startDraw();
+});
 function drawModel() {
     context.save();
     context.translate((canvas.width - model.width) / 2, (canvas.height - model.height) / 2);

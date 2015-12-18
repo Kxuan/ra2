@@ -65,9 +65,9 @@
                     imgData.data[p + 3] = 0;
                     p += 4;
                 } else {
-                    imgData.data[p++] = colorMap[frame.u8Image[i]].R;
-                    imgData.data[p++] = colorMap[frame.u8Image[i]].G;
-                    imgData.data[p++] = colorMap[frame.u8Image[i]].B;
+                    imgData.data[p++] = colorMap[indexColor].R;
+                    imgData.data[p++] = colorMap[indexColor].G;
+                    imgData.data[p++] = colorMap[indexColor].B;
                     imgData.data[p++] = 255;
                 }
             }
