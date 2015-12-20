@@ -1,18 +1,20 @@
 var canvas = document.getElementsByTagName('canvas')[0],
     context = canvas.getContext('2d');
 
-var unit_palette = GAME.Palette.get("ra2/cache/unittem.pal");
+var unit_palette = GAME.Palette("ra2/cache/unittem.pal");
 
-var model = new Ra2BuildingModel(
+var model = Ra2BuildingModel(
     unit_palette,
-    [{type: 1, shape: "ra2/isosnow/gaaircmk.shp"}],
-    [
-        {type: 3, shape: "ra2/snow/gaairc.shp"},
-        {type: 2, shape: "ra2/snow/gaaircbb.shp"},
-        {type: 2, shape: "ra2/snow/gaairc_a.shp"},
-        {type: 2, shape: "ra2/snow/gaairc_b.shp"},
-        {type: 2, shape: "ra2/snow/gaairc_c.shp"},
-    ]);
+    {
+        build: {type: 1, shape: "ra2/isosnow/gaaircmk.shp"},
+        normal: [
+            {type: 3, shape: "ra2/snow/gaairc.shp"},
+            {type: 2, shape: "ra2/snow/gaaircbb.shp"},
+            {type: 2, shape: "ra2/snow/gaairc_a.shp"},
+            {type: 2, shape: "ra2/snow/gaairc_b.shp"},
+            {type: 2, shape: "ra2/snow/gaairc_c.shp"}
+        ]
+    });
 
 canvas.width = document.documentElement.clientWidth;
 canvas.height = document.documentElement.clientHeight;

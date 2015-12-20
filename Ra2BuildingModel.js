@@ -4,55 +4,60 @@
     /**
      *
      * @param {Palette} palette
-     * @param {{type:int, shape: Shape|Resource|string}[] | null} build
-     * @param {{type:int, shape: Shape|Resource|string}[] | null} normal
-     * @param {{type:int, shape: Shape|Resource|string}[] | null} destroy
+     * @param {Object.<string,{type:int, shape: Shape|Resource|string}[] | null>} opt
      * @constructor
      */
-    var Ra2BuildingModel = function (palette, build, normal, destroy) {
+    var Ra2BuildingModel = function (palette, opt) {
+        if (!(this instanceof Ra2BuildingModel))
+            return new Ra2BuildingModel(palette, opt);
+
         this.palette = palette;
 
-        this.build = toArray(build);
-        this.normal = toArray(normal);
-        this.destroy = toArray(destroy);
+        this.build = toArray(opt.build);
+        this.normal = toArray(opt.normal);
+        this.destroy = toArray(opt.destroy);
         Object.defineProperty(this, 'ready', {
             value: false,
             configurable: true
         });
     };
     inherits(Ra2BuildingModel, GAME.BuildingModel);
+
     Ra2BuildingModel.prototype.load = function () {
         if (this.ready)
             return Promise.resolve();
 
         var self = this;
         return Promise
+            //First load all shapes
             .all(this.build.concat(this.normal).concat(this.destroy)
                 .map(function (layer) {
-                    layer.shape = new GAME.ColoredShape(layer.shape, self.palette);
+                    layer.shape = GAME.ColoredShape(layer.shape, self.palette);
                     return layer.shape.load();
                 }))
             .then(function () {
-                var layers = self.normal.map(function (layer) {
-                        return parseNormalLayer(layer)
-                    })
-                    .concat(self.build.map(function (layer) {
-                        return {
-                            states: {build: Range(0, layer.shape.shape.frames.length / 2)},
-                            shape: layer.shape
-                        }
-                    }))
-                    .concat(self.destroy.map(function (layer) {
-                        return {
-                            states: {destroy: Range(0, layer.shape.shape.frames.length / 2)},
-                            shape: layer.shape
-                        }
-                    }));
+                var layers = self.normal.map(parseNormalLayer.bind(this))
+                    .concat(self.build.map(parseSpecialLayer.bind(this, "build")))
+                    .concat(self.destroy.map(parseSpecialLayer.bind(this, "destroy")));
+
+                //After all layer has been parsed, construct BuildingModel
                 GAME.BuildingModel.call(self, layers);
-                return GAME.BuildingModel.prototype.load.call(self);
+                GAME.BuildingModel.prototype.load.call(self);
+
+                //Cleanup all resources
+                self.palette = self.normal = self.build = self.destroy = null;
             });
     };
     global.Ra2BuildingModel = Ra2BuildingModel;
+
+    function parseSpecialLayer(state, layer) {
+        var states = {__proto__: null};
+        states[state] = Range(0, layer.shape.shape.frames.length / 2);
+        return {
+            states: states,
+            shape: layer.shape
+        }
+    }
 
     function parseNormalLayer(layer) {
         var states = Object.create(null);

@@ -2,6 +2,12 @@
     "use strict";
 
     var cached_resources = {};
+    /**
+     *
+     * @param {string} path
+     * @returns {Resource}
+     * @constructor
+     */
     var Resource = function (path) {
         if (!(this instanceof Resource))
             return Resource.get(path);

@@ -25,6 +25,12 @@
             }
         })
     };
+    /**
+     * Using an array to wrap all arguments
+     * @template T
+     * @param {T[]|T|null|undefined} obj
+     * @returns {T[]}
+     */
     this.toArray = function (obj) {
         var result = [];
         for (var i = 0; i < arguments.length; i++) {

@@ -6,13 +6,17 @@
     var cached_palettes = {};
     /**
      * Palette
-     * @param {Resource} res
+     * @param {Resource|string} res
+     * @return {Palette}
      * @constructor
      */
     var Palette = function (res) {
+        if (!(this instanceof Palette))
+            return Palette.get(res);
+
         this.resource = GAME.Resource.get(res);
         cached_palettes[this.resource.path] = this;
-        console.info("Palette Created(%s)",this.resource.path);
+        console.info("Palette Created(%s)", this.resource.path);
     };
     Palette.empty = new Array(256);
     Palette.empty.fill('#000000');

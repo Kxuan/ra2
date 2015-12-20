@@ -2,13 +2,19 @@
     "use strict";
     /**
      * ColoredShape
+     * Combine Shape and Palette, and provider .draw(int,CanvasRenderingContext2D)
+     * allow you draw any frame in shape to canvas
+     *
      * @param {Shape|Resource|string} shape
      * @param {Palette|Resource|string} palette
+     * @return {ColoredShape}
      * @constructor
      */
     var ColoredShape = function (shape, palette) {
-        this.shape = GAME.Shape.get(shape);
-        this.palette = GAME.Palette.get(palette);
+        if (!(this instanceof ColoredShape))
+            return new ColoredShape(shape, palette);
+        this.shape = GAME.Shape(shape);
+        this.palette = GAME.Palette(palette);
     };
 
     ColoredShape.prototype.ready = false;
