@@ -62,35 +62,35 @@
         var duration;
 
         switch (layer.type) {
-            case 1: // One state: normal = injure = broken
+            case 1: // One state: normal = fire = broken
                 duration = layer.graph.shape.frames.length / 2;
                 states = {
                     normal: Range(0, duration),
-                    injure: Range(0, duration),
+                    fire: Range(0, duration),
                     broken: Range(0, duration),
                     __proto__: null
                 };
                 break;
-            case 2:// Two state: normal, injure = broken
+            case 2:// Two state: normal, fire = broken
                 if (layer.graph.shape.frames.length % 4 != 0) {
                     throw new Error("Unexpected shape frame count");
                 }
                 duration = layer.graph.shape.frames.length / 4;
                 states = {
                     normal: Range(0, duration),
-                    injure: Range(duration, duration * 2),
+                    fire: Range(duration, duration * 2),
                     broken: Range(duration, duration * 2),
                     __proto__: null
                 };
                 break;
-            case 3:// Three state: normal, injure, broken
+            case 3:// Three state: normal, fire, broken
                 if (layer.graph.shape.frames.length % 6 != 0) {
                     throw new Error("Unexpected shape frame count");
                 }
                 duration = layer.graph.shape.frames.length / 6;
                 states = {
                     normal: Range(0, duration),
-                    injure: Range(duration, duration * 2),
+                    fire: Range(duration, duration * 2),
                     broken: Range(duration * 2, duration * 3),
                     __proto__: null
                 };

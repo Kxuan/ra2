@@ -19,7 +19,7 @@ var model = Ra2BuildingModel(
 canvas.width = document.documentElement.clientWidth;
 canvas.height = document.documentElement.clientHeight;
 
-var PLAY_STATES = ['normal', 'injure', 'broken'];
+var PLAY_STATES = ['normal', 'fire', 'broken'];
 
 model.load().then(function () {
     model.setState('build', function (done) {
