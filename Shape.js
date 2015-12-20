@@ -29,6 +29,9 @@
             case 0x03:
                 Decode3(imageData, this.image, this.width, this.height);
                 break;
+            case 0x02:
+                Decode2(imageData, this.image, this.width, this.height);
+                break;
             default:
                 throw new Error("Unexpected frame flag.");
         }
@@ -125,7 +128,7 @@
             throw new Error("Source length is not align to 8");
         }
         var SP = 0, DP = 0;
-        var x, y, Count, v, maxdp;
+        var x, y, Count, v;
 
         var readByte = function () {
             if (SP >= Source.length)
@@ -173,4 +176,35 @@
             throw new Error("Data size incorrect")
     }
 
+    function Decode2(src, dst, width, height) {
+        console.warn("Using untest function Decode2");
+        var Source = new Uint8Array(src),
+            Dest = new Uint8Array(dst);
+
+        if ((src.byteLength & 0x7) != 0) {
+            throw new Error("Source length is not align to 8");
+        }
+        var SP = 0, DP = 0;
+        var x, y, Count, v;
+
+        var readByte = function () {
+            if (SP >= Source.length)
+                throw new Error("Read out of range");
+
+            return Source[SP++];
+        }, writeByte = function (v) {
+            if (DP >= Dest.length)
+                throw new Error("Write out of range");
+
+            Dest[DP++] = v;
+        };
+
+        for (y = 1; y <= height; y++) {
+            Count = (readByte() | (readByte() << 8)) - 2;
+            while (Count > 0) {
+                Count--;
+                writeByte(readByte());
+            }
+        }
+    }
 })();
