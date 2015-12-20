@@ -25,8 +25,8 @@
             //First load all shapes
                 .all(opt.build.concat(opt.normal).concat(opt.destroy)
                     .map(function (layer) {
-                        layer.shape = GAME.Graph(layer.shape, opt.palette);
-                        return layer.shape.load();
+                        layer.graph = GAME.Graph(layer.shape, opt.palette);
+                        return layer.graph.load();
                     }))
                 .then(function () {
                     var layers = opt.normal.map(parseNormalLayer.bind(this))
@@ -49,10 +49,10 @@
 
     function parseSpecialLayer(state, layer) {
         var states = {__proto__: null};
-        states[state] = Range(0, layer.shape.shape.frames.length / 2);
+        states[state] = Range(0, layer.graph.shape.frames.length / 2);
         return {
             states: states,
-            shape: layer.shape
+            graph: layer.graph
         }
     }
 
@@ -62,7 +62,7 @@
 
         switch (layer.type) {
             case 1: // One state: normal = injure = broken
-                duration = layer.shape.shape.frames.length / 2;
+                duration = layer.graph.shape.frames.length / 2;
                 states = {
                     normal: Range(0, duration),
                     injure: Range(0, duration),
@@ -71,10 +71,10 @@
                 };
                 break;
             case 2:// Two state: normal, injure = broken
-                if (layer.shape.shape.frames.length % 4 != 0) {
+                if (layer.graph.shape.frames.length % 4 != 0) {
                     throw new Error("Unexpected shape frame count");
                 }
-                duration = layer.shape.shape.frames.length / 4;
+                duration = layer.graph.shape.frames.length / 4;
                 states = {
                     normal: Range(0, duration),
                     injure: Range(duration, duration * 2),
@@ -83,10 +83,10 @@
                 };
                 break;
             case 3:// Three state: normal, injure, broken
-                if (layer.shape.shape.frames.length % 6 != 0) {
+                if (layer.graph.shape.frames.length % 6 != 0) {
                     throw new Error("Unexpected shape frame count");
                 }
-                duration = layer.shape.shape.frames.length / 6;
+                duration = layer.graph.shape.frames.length / 6;
                 states = {
                     normal: Range(0, duration),
                     injure: Range(duration, duration * 2),
@@ -100,7 +100,7 @@
 
         return {
             states: states,
-            shape: layer.shape
+            graph: layer.graph
         };
     }
 })();

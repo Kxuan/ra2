@@ -32,9 +32,9 @@ model.load().then(function () {
 
 function switchTo(si) {
     var i = 0;
+    console.log(PLAY_STATES[si]);
     model.setState(PLAY_STATES[si], function (done) {
         if (done) {
-            console.log(PLAY_STATES[si], i);
             i++;
             if (i > 3) {
                 if (si + 1 >= PLAY_STATES.length) {

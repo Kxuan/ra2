@@ -15,7 +15,7 @@
         configurable: true,
         get: function () {
             return this.layers.every(function (layer) {
-                return layer.shape.shape.ready;
+                return layer.graph.shape.ready;
             });
         }
     });
@@ -41,44 +41,38 @@
             .all(
                 //Load all colored data
                 this.layers.map(function (layer) {
-                    return layer.shape.load();
+                    return layer.graph.load();
                 }))
-            .catch(function(err){
+            .catch(function (err) {
                 console.error(err);
                 throw err;
             })
             .then(function () {
                 Object.defineProperty(self, 'ready', {value: true});
-                self.width = self.layers[0].shape.shape.width;
-                self.height = self.layers[0].shape.shape.height;
+                self.width = self.layers[0].graph.shape.width;
+                self.height = self.layers[0].graph.shape.height;
 
                 if (self.layers.some(function (layer) {
-                        return layer.shape.shape.width != self.width || layer.shape.shape.height != self.height;
+                        return layer.graph.shape.width != self.width || layer.graph.shape.height != self.height;
                     })) {
                     throw new Error("Some shape has different size");
                 }
                 return self.layers;
             })
             .then(function (layers) {
-                var allLayerStates = layers.reduce(
-                    /**
-                     *
-                     * @param {object} states
-                     * @param layer
-                     */
-                    function (states, layer) {
-                        for (var state_name in layer.states) {
-                            if (!(state_name in states)) {
-                                states[state_name] = [];
-                            }
-                            states[state_name].push({
-                                shape: layer.shape,
-                                states: layer.states[state_name],
-                                frameIndex: 0
-                            });
+                var allLayerStates = layers.reduce(function (states, layer) {
+                    for (var state_name in layer.states) {
+                        if (!(state_name in states)) {
+                            states[state_name] = [];
                         }
-                        return states;
-                    }, {});
+                        states[state_name].push({
+                            graph: layer.graph,
+                            states: layer.states[state_name],
+                            frameIndex: 0
+                        });
+                    }
+                    return states;
+                }, {__proto__: null});
 
                 var canvas, ctx;
                 self.states = Object.create(null);
@@ -93,8 +87,8 @@
                         canvas.height = self.height;
                         ctx = canvas.getContext('2d');
                         currentStateLayers.forEach(function (frame) {
-                            frame.shape.draw(frame.states[frame.frameIndex], ctx);
-                            frame.shape.draw(frame.states[frame.frameIndex] + frame.shape.shape.frames.length / 2, ctx);
+                            frame.graph.draw(frame.states[frame.frameIndex], ctx);
+                            frame.graph.draw(frame.states[frame.frameIndex] + frame.graph.shape.frames.length / 2, ctx);
                             frame.frameIndex = (frame.frameIndex + 1) % frame.states.length;
                         });
                         currentStateFrames.push(canvas);
