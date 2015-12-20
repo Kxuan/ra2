@@ -43,6 +43,10 @@
                 this.layers.map(function (layer) {
                     return layer.shape.load();
                 }))
+            .catch(function(err){
+                console.error(err);
+                throw err;
+            })
             .then(function () {
                 Object.defineProperty(self, 'ready', {value: true});
                 self.width = self.layers[0].shape.shape.width;

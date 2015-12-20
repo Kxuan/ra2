@@ -4,8 +4,8 @@ var canvas = document.getElementsByTagName('canvas')[0],
 var unit_palette = GAME.Palette("ra2/cache/unittem.pal");
 
 var model = Ra2BuildingModel(
-    unit_palette,
     {
+        palette: unit_palette,
         build: {type: 1, shape: "ra2/isosnow/gaaircmk.shp"},
         normal: [
             {type: 3, shape: "ra2/snow/gaairc.shp"},
@@ -36,7 +36,7 @@ function switchTo(si) {
         if (done) {
             console.log(PLAY_STATES[si], i);
             i++;
-            if (i > 5) {
+            if (i > 3) {
                 if (si + 1 >= PLAY_STATES.length) {
                     model.setState('destroy');
                 } else {
@@ -52,11 +52,14 @@ function drawModel() {
     context.translate((canvas.width - model.width) / 2, (canvas.height - model.height) / 2);
     model.draw(context);
     context.restore();
+}
+function gameTick() {
     model.step();
 }
+
 function startDraw() {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     drawModel();
-
-    setTimeout(startDraw, 100);
+    requestAnimationFrame(startDraw);
 }
+setInterval(gameTick, 50);

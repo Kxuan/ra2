@@ -1,30 +1,30 @@
 (function () {
     "use strict";
     /**
-     * ColoredShape
+     * Graph
      * Combine Shape and Palette, and provider .draw(int,CanvasRenderingContext2D)
      * allow you draw any frame in shape to canvas
      *
      * @param {Shape|Resource|string} shape
      * @param {Palette|Resource|string} palette
-     * @return {ColoredShape}
+     * @return {Graph}
      * @constructor
      */
-    var ColoredShape = function (shape, palette) {
-        if (!(this instanceof ColoredShape))
-            return new ColoredShape(shape, palette);
+    var Graph = function (shape, palette) {
+        if (!(this instanceof Graph))
+            return new Graph(shape, palette);
         this.shape = GAME.Shape(shape);
         this.palette = GAME.Palette(palette);
     };
 
-    ColoredShape.prototype.ready = false;
-    ColoredShape.prototype.shape = null;
-    ColoredShape.prototype.palette = null;
+    Graph.prototype.ready = false;
+    Graph.prototype.shape = null;
+    Graph.prototype.palette = null;
     /**
      *
      * @returns {*}
      */
-    ColoredShape.prototype.load = function () {
+    Graph.prototype.load = function () {
         if (this.ready)
             return Promise.resolve();
 
@@ -40,7 +40,7 @@
      * @param {int} frameIndex
      * @param {CanvasRenderingContext2D} ctx
      */
-    ColoredShape.prototype.draw = function (frameIndex, ctx) {
+    Graph.prototype.draw = function (frameIndex, ctx) {
         if (!this.ready || !this.shape.frames[frameIndex])
             return;
         var frame = this.shape.frames[frameIndex],
@@ -49,7 +49,7 @@
             ctx.drawImage(canvas, frame.x, frame.y);
         }
     };
-    GAME.ColoredShape = ColoredShape;
+    GAME.Graph = Graph;
 
     function drawFrame(frame, colorMap, drawForeground) {
         if (frame.width == 0 || frame.height == 0) {
