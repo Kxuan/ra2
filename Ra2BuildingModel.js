@@ -4,6 +4,7 @@
     /**
      *
      * @param opt
+     * @return {Ra2BuildingModel}
      * @constructor
      */
     var Ra2BuildingModel = function (opt) {
