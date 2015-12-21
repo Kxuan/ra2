@@ -34,17 +34,17 @@
                         .concat(opt.build.map(parseSpecialLayer.bind(this, "build")))
                         .concat(opt.destroy.map(parseSpecialLayer.bind(this, "destroy")));
 
-                    //After all layer has been parsed, construct BuildingModel
-                    GAME.BuildingModel.call(self, layers);
+                    //After all layer has been parsed, construct Model
+                    GAME.Model.call(self, layers);
 
                     delete self.load;
 
                     //Call to real .load()
-                    return GAME.BuildingModel.prototype.load.call(self);
+                    return GAME.Model.prototype.load.call(self);
                 });
         }
     };
-    inherits(Ra2BuildingModel, GAME.BuildingModel);
+    inherits(Ra2BuildingModel, GAME.Model);
 
     global.Ra2BuildingModel = Ra2BuildingModel;
 
